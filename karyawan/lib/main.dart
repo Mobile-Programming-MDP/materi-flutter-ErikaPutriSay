@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:karyawan/models/karyawan.dart';
+import 'models/karyawan.dart';
+
+import 'models/karyawan.dart';
 
 void main() {
   runApp(const MyApp());
