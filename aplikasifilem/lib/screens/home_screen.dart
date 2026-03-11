@@ -1,5 +1,6 @@
 import 'package:aplikasifilem/models/movie.dart';
 import 'package:aplikasifilem/services/api_services.dart';
+import 'package:aplikasifilem/screens/detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,21 +13,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService apiService = ApiService();
 
-  List<movie> _allMovies = [];
-  List<movie> _trendingMovies = [];
-  List<movie> _popularMovies = [];
+  List<Movie> _allMovies = [];
+  List<Movie> _trendingMovies = [];
+  List<Movie> _popularMovies = [];
 
   void _loadmovies() async {
-    final List<Map<String, dynamic>> allmoviesData = await apiService.getAllMovies();
-    final List<Map<String, dynamic>> trendingMoviesData = await apiService.getTrendingMovies();
-    final List<Map<String, dynamic>> popularMoviesData = await apiService.getPopularMovies();
+    final List<Map<String, dynamic>> allmoviesData = await apiService
+        .getAllMovies();
+    final List<Map<String, dynamic>> trendingMoviesData = await apiService
+        .getTrendingMovies();
+    final List<Map<String, dynamic>> popularMoviesData = await apiService
+        .getPopularMovies();
 
     setState(() {
-      _allMovies = allmoviesData.map((e) => movie.fromJson(e)).toList();
-      _trendingMovies = trendingMoviesData.map((e) => movie.fromJson(e)).toList();
-      _popularMovies = popularMoviesData.map((e) => movie.fromJson(e)).toList();
+      _allMovies = allmoviesData.map((e) => Movie.fromJson(e)).toList();
+      _trendingMovies = trendingMoviesData
+          .map((e) => Movie.fromJson(e))
+          .toList();
+      _popularMovies = popularMoviesData.map((e) => Movie.fromJson(e)).toList();
     });
-
   }
 
   @override
@@ -36,19 +41,69 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context){
-    return Scaffold(appBar: AppBar(title: const Text('filem'),
-    ),
-    body: SingleChildScrollView(
-      child: column(
-        CrossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        
-      )
-    )
-    )
-    
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('filem')),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildMoviesList('All Movies', _allMovies),
+            _buildMoviesList('Trending Movies', _trendingMovies),
+            _buildMoviesList('Popular Movies', _popularMovies),
+          ],
+        ),
+      ),
+    );
   }
 
-
+  Widget _buildMoviesList(String title, List<Movie> movies) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        ),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: movies.length,
+            itemBuilder: (BuildContext context, int index) {
+              final movie = movies[index];
+              return GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailScreen(movie: movie),
+                  ),
+                ),
+                child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Image.network(
+                          "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+                          width: 100,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        ),
+                        Text(
+                          movie.title.length > 14
+                              ? '${movie.title.substring(0, 10)}...'
+                              : movie.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                  ],
+                ),
+                ),
+              );
+            },
+          )),
+      ],
+    );
+  }
 }
