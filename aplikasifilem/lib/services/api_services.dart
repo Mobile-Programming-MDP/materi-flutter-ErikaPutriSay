@@ -4,37 +4,42 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String baseUrl = 'https://api.themoviedb.org/3';
+  //ganti dengan APIKey masing-masing
   static const String apiKey = '9d6b1a75df5833e0e59a8534172adb39';
+  //1. mengambil list movie yang saat ini tayang
 
   Future<List<Map<String, dynamic>>> getAllMovies() async {
     final response = await http.get(
       Uri.parse("$baseUrl/movie/now_playing?api_key=$apiKey"),
     );
-    final data = jsonDecode(response.body);
+    final data = json.decode(response.body);
     return List<Map<String, dynamic>>.from(data['results']);
   }
 
+  //2. mengambil list movie yang sedang trending minggu ini
   Future<List<Map<String, dynamic>>> getTrendingMovies() async {
     final response = await http.get(
       Uri.parse("$baseUrl/movie/trending/week?api_key=$apiKey"),
     );
-    final data = jsonDecode(response.body);
+    final data = json.decode(response.body);
     return List<Map<String, dynamic>>.from(data['results']);
   }
 
+  //3. mengambil list popular movie 
   Future<List<Map<String, dynamic>>> getPopularMovies() async {
     final response = await http.get(
       Uri.parse("$baseUrl/movie/popular?api_key=$apiKey"),
     );
-    final data = jsonDecode(response.body);
+    final data = json.decode(response.body);
     return List<Map<String, dynamic>>.from(data['results']);
   }
 
+  //4. mengambil list movie melalui pencarian
   Future<List<Map<String, dynamic>>> searchMovies(String query) async {
     final response = await http.get(
       Uri.parse("$baseUrl/search/movie?api_key=$apiKey&query=$query"),
     );
-    final data = jsonDecode(response.body);
+    final data = json.decode(response.body);
     return List<Map<String, dynamic>>.from(data['results']);
   }
 }
