@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aplikasifilem/models/movie.dart';
+import 'package:pilem/models/movie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailScreen extends StatefulWidget {

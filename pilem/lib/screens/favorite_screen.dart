@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:aplikasifilem/models/movie.dart';
-import 'package:aplikasifilem/screens/detail_screen.dart';
+import 'package:pilem/models/movie.dart';
+import 'package:pilem/screens/detail_screen.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});

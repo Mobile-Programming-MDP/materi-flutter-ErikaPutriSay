@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:aplikasifilem/models/movie.dart';
-import 'package:aplikasifilem/screens/detail_screen.dart';
-import 'package:aplikasifilem/services/api_services.dart';
+import 'package:pilem/models/movie.dart';
+import 'package:pilem/screens/detail_screen.dart';
+import 'package:pilem/services/api_services.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -32,8 +32,8 @@ class SearchScreenState extends State<SearchScreen> {
       });
       return;
     }
-    final List<Map<String, dynamic>> searchData =
-        await _apiService.searchMovies(_searchController.text);
+    final List<Map<String, dynamic>> searchData = await _apiService
+        .searchMovies(_searchController.text);
     setState(() {
       _searchResults = searchData.map((e) => Movie.fromJson(e)).toList();
     });
@@ -42,9 +42,7 @@ class SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search'),
-      ),
+      appBar: AppBar(title: const Text('Search')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -52,10 +50,7 @@ class SearchScreenState extends State<SearchScreen> {
             Container(
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
-                ),
+                border: Border.all(color: Colors.grey, width: 1.0),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               child: Row(
