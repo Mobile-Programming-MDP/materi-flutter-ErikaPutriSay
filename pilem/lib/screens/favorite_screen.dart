@@ -32,7 +32,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorite Tempat'),
+        title: const Text('Tempat Favorit'),
         backgroundColor: Colors.deepPurpleAccent,
       ),
       body: ListView.builder(
