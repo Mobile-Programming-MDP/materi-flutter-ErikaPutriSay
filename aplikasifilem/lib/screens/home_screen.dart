@@ -63,7 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ),
         SizedBox(
           height: 200,
@@ -80,29 +83,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Image.network(
-                          "https://image.tmdb.org/t/p/w500${movie.posterPath}",
-                          width: 100,
-                          height: 150,
-                          fit: BoxFit.cover,
-                        ),
-                        Text(
-                          movie.title.length > 14
-                              ? '${movie.title.substring(0, 10)}...'
-                              : movie.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                  ],
-                ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Image.network(
+                        "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+                        width: 100,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                      Text(
+                        movie.title.length > 14
+                            ? '${movie.title.substring(0, 10)}...'
+                            : movie.title,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
-          )),
+          ),
+        ),
       ],
     );
   }
