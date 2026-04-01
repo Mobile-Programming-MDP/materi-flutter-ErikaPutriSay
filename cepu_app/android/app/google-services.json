@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086531282765",
+    "project_id": "pab2-si",
+    "storage_bucket": "pab2-si.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086531282765:android:d072aa9b1ebce1d8d93904",
+        "android_client_info": {
+          "package_name": "com.example.cepu_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDtxGE9dA53o9eEiTAlMquSv-lXgD6CB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
