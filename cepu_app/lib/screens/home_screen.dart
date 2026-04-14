@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _idToken = "";
   String? _uid = "";
   String? _email = "";
-  
+
   get color => null;
 
   Future<void> getFirebaseAuthUser() async {
@@ -77,14 +77,14 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 100,
             height: 100,
           ),
-          SizedBox(height: 8.0,),
+          SizedBox(height: 8.0),
           Text(
             FirebaseAuth.instance.currentUser!.displayName!,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16.0),
           Text("You have been signed in with Token id: $_idToken"),
-        ]
+        ],
       ),
     );
   }
