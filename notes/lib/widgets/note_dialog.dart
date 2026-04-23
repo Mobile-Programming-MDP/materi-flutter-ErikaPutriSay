@@ -19,6 +19,9 @@ class _NoteDialogState extends State<NoteDialog> {
   // ignore: unused_field
   File? _imageFile;
   String? _base64Image;
+  
+  get _latitude => null;
+  get _longitude => null;
 
   @override
   void initState() {
@@ -107,6 +110,8 @@ class _NoteDialogState extends State<NoteDialog> {
                   title: _titleController.text,
                   description: _descriptionController.text,
                   imageBase64: _base64Image,
+                  latitude: _latitude,
+                  longitude: _longitude,
                 ),
               ).whenComplete(() {
                 Navigator.of(context).pop();
@@ -119,6 +124,8 @@ class _NoteDialogState extends State<NoteDialog> {
                   description: _descriptionController.text,
                   createdAt: widget.note!.createdAt,
                   imageBase64: _base64Image,
+                  latitude: _latitude,
+                  longitude: _longitude,
                 ),
               ).whenComplete(() => Navigator.of(context).pop());
             }

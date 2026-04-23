@@ -14,7 +14,7 @@ class Note {
     required this.description,
     this.imageBase64,
     this.createdAt,
-    this.updatedAt,
+    this.updatedAt, required longitude, required latitude,
   });
 
   factory Note.fromDocument(DocumentSnapshot doc) {
