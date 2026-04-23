@@ -179,7 +179,6 @@ class _NoteDialogState extends State<NoteDialog> {
                   longitude: _longitude,
                 ),
               ).whenComplete(() {
-                // ignore: use_build_context_synchronously
                 Navigator.of(context).pop();
               });
             } else {

@@ -16,9 +16,9 @@ class Note {
     required this.description,
     this.imageBase64,
     this.createdAt,
-    this.updatedAt, 
-    this.longitude,
+    this.updatedAt,
     this.latitude,
+    this.longitude,
   });
 
   factory Note.fromDocument(DocumentSnapshot doc) {
@@ -29,7 +29,9 @@ class Note {
       description: data['description'],
       imageBase64: data['image_base_64'],
       createdAt: data['created_at'] as Timestamp,
-      updatedAt: data['updated_at'] as Timestamp, longitude: null, latitude: null,
+      updatedAt: data['updated_at'] as Timestamp,
+      latitude: data['latitude'],
+      longitude: data['longitude'],
     );
   }
 
@@ -40,6 +42,8 @@ class Note {
       'image_base64': imageBase64,
       'created_at': createdAt,
       'updated_at': updatedAt,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }
