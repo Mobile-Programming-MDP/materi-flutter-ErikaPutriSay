@@ -23,8 +23,10 @@ class NoteService {
       'title': note.title,
       'description': note.description,
       'image_base_64': note.imageBase64,
+      'created_at': note.createdAt,
       'updated_at': FieldValue.serverTimestamp(),
     };
+
     await _notesCollection.doc(note.id).update(updatedNote);
   }
 

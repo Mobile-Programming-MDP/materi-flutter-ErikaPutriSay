@@ -4,22 +4,23 @@ class Note {
   String? id;
   final String title;
   final String description;
-  String imageBase64;
+  String? imageBase64;
   Timestamp? createdAt;
   Timestamp? updatedAt;
 
   Note({
-    required this.id,
+    this.id,
     required this.title,
     required this.description,
-    required this.imageBase64,
-    required this.createdAt,
-    required this.updatedAt,
+    this.imageBase64,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  factory Note.fromMap(Map<String, dynamic> data, String documentId) {
+  factory Note.fromDocument(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Note(
-      id: documentId,
+      id: doc.id,
       title: data['title'],
       description: data['description'],
       imageBase64: data['image_base_64'],
@@ -28,11 +29,11 @@ class Note {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toDocument() {
     return {
       'title': title,
       'description': description,
-      'image_base_64': imageBase64,
+      'image_base64': imageBase64,
       'created_at': createdAt,
       'updated_at': updatedAt,
     };
