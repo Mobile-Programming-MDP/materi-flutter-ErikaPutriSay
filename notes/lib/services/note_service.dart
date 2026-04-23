@@ -12,6 +12,9 @@ class NoteService {
       'title': note.title,
       'description': note.description,
       'image_base_64': note.imageBase64,
+      'latitude': note.latitude,
+      'longitude': note.longitude,
+
       'created_at': FieldValue.serverTimestamp(),
       'updated_at': FieldValue.serverTimestamp(),
     };
@@ -24,6 +27,8 @@ class NoteService {
       'description': note.description,
       'image_base_64': note.imageBase64,
       'created_at': note.createdAt,
+      'latitude': note.latitude,
+      'longitude': note.longitude,
       'updated_at': FieldValue.serverTimestamp(),
     };
 
@@ -52,7 +57,7 @@ class NoteService {
               : null,
           updatedAt: data['updated_at'] != null
               ? data['updated_at'] as Timestamp
-              : null,
+              : null, longitude: null, latitude: null,
         );
       }).toList();
     });

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notes/models/note.dart';
 import 'package:notes/services/note_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NoteDialog extends StatefulWidget {
   final Note? note;
@@ -51,6 +52,21 @@ class _NoteDialogState extends State<NoteDialog> {
     }
   }
 
+  Future<void> _getLocation() async {
+    // Implement location retrieval using geolocator package
+  }
+
+  Future<void> openMap() async {
+    final uri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$_latitude,$_longitude');
+    final success = await launchUrl( uri, mode: LaunchMode.externalApplication);
+    if (!mounted) return;
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal membuka peta.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -87,7 +103,7 @@ class _NoteDialogState extends State<NoteDialog> {
           ),
           TextButton(onPressed: _pickImage, child: const Text('Pick Image')),
           TextButton(
-            onPressed: () {},
+            onPressed: _getLocation,
             child: const Text('Get Current Location'),
           ),
         ],

@@ -7,6 +7,8 @@ class Note {
   String? imageBase64;
   Timestamp? createdAt;
   Timestamp? updatedAt;
+  String? latitude;
+  String? longitude;
 
   Note({
     this.id,
@@ -14,7 +16,9 @@ class Note {
     required this.description,
     this.imageBase64,
     this.createdAt,
-    this.updatedAt, required longitude, required latitude,
+    this.updatedAt, 
+    this.longitude,
+    this.latitude,
   });
 
   factory Note.fromDocument(DocumentSnapshot doc) {
@@ -25,7 +29,7 @@ class Note {
       description: data['description'],
       imageBase64: data['image_base_64'],
       createdAt: data['created_at'] as Timestamp,
-      updatedAt: data['updated_at'] as Timestamp,
+      updatedAt: data['updated_at'] as Timestamp, longitude: null, latitude: null,
     );
   }
 
