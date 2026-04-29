@@ -32,7 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String? _idToken = "";
+  // ignore: unused_field
   String? _uid = "";
+  // ignore: unused_field
   String? _email = "";
 
   get color => null;
