@@ -86,6 +86,14 @@ class _HomeScreenState extends State<HomeScreen> {
           Text("You have been signed in with Token id: $_idToken"),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of( context).push(
+            MaterialPageRoute(builder: (context) => const AddPostScreen()),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

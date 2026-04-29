@@ -8,15 +8,15 @@ class PostService {
 
 static Future<void> addPost(Post post) async {
   Map<String, dynamic> newPost = {
-    'image': post.Image,
-    'description': post.description,
-    'category': post.category,
+    'image': post['image'],
+    'description': post['description'],
+    'category': post['category'],
     'created_at': FieldValue.serverTimestamp(),
     'updated_at': FieldValue.serverTimestamp(),
-    'latitude': post.latitude,
-    'longitude': post.longitude,
-    'user_id': post.userId,
-    'user_full_name': post.userFullName,
+    'latitude': post['latitude'],
+    'longitude': post['longitude'],
+    'user_id': post['user_id'],
+    'user_full_name': post['user_full_name'],
   };
-  await _postsCollection.add(newPost);  
+  await _postsCollection.add(newPost);
 }
