@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post {
   String? id;
-  String? Image;
+  String? image;
   String? description;
   String? category;
   Timestamp? createdAt;
@@ -14,7 +14,7 @@ class Post {
 
   Post({
     this.id,
-    this.Image,
+    this.image,
     this.description,
     this.category,
     this.createdAt,
@@ -29,7 +29,7 @@ class Post {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Post(
       id: doc.id,
-      Image: data['image'],
+      image: doc['image'],
       description: data['description'],
       category: data['category'],
       createdAt: data['created_at'] as Timestamp,
@@ -43,13 +43,13 @@ class Post {
 
   Map<String, dynamic> toDocument() {
     return {
-      'image': Image,
+      'image': image,
       'description': description,
       'category': category,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
       'latitude': latitude,
       'longitude': longitude,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
       'user_id': userId,
       'user_full_name': userFullName,
     };
