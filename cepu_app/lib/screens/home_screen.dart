@@ -21,14 +21,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  //Fungsi untuk membuat url foto profile / avatar
-  String generateAvatarUrl(String? fullName) {
-    final formattedName = fullName!.trim().replaceAll(' ', '+');
+  // Fungsi untuk membuat url foto profile / avatar
+  String generateAvatarUrl(String displayName) {
+    final formattedName = displayName.trim().replaceAll(' ', '+');
     return 'https://ui-avatars.com/api/?name=$formattedName&color=FFFFFF&background=000000';
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final displayName = user?.displayName?.trim();
+    final avatarName = (displayName != null && displayName.isNotEmpty)
+        ? displayName
+        : 'User';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home Screen"),
@@ -37,26 +43,20 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               signOut();
             },
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             tooltip: "Sign Out",
           ),
         ],
       ),
       body: Column(
         children: [
-          Image.network(
-            generateAvatarUrl(
-              FirebaseAuth.instance.currentUser?.displayName.toString(),
-            ),
-            width: 100,
-            height: 100,
-          ),
-          SizedBox(height: 8.0),
+          Image.network(generateAvatarUrl(avatarName), width: 100, height: 100),
+          const SizedBox(height: 8.0),
           Text(
-            FirebaseAuth.instance.currentUser!.displayName!,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            avatarName,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           const Center(child: Text("You Have Been Signed In!")),
         ],
       ),
