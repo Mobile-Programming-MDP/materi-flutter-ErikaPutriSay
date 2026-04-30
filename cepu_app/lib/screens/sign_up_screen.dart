@@ -1,4 +1,6 @@
 import 'package:cepu_app/screens/sign_in_screen.dart';
+// ignore: unused_import
+import 'package:cepu_app/screens/sign_up_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +12,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  // tambahkan name controller
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -24,11 +27,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Column(
           children: [
             const SizedBox(height: 32.0),
-            //tambahkan textfield untuk nama lengkap jika diperlukan
+            // Tambahkan textfield display
             TextField(
               controller: _nameController,
               decoration: const InputDecoration(
                 labelText: 'Display Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -74,13 +85,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     } else {
       try {
-        //3. buat variabel userCredential dan set DisplayName untuk menyimpan hasil dari createUserWithEmailAndPassword
-        final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
-        userCredential.user?.updateDisplayName(_nameController.text);
-        
+        UserCredential user = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+              email: _emailController.text,
+              password: _passwordController.text,
+            );
+        await user.user?.updateDisplayName(_nameController.text);
+
         if (mounted) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const SignInScreen()),

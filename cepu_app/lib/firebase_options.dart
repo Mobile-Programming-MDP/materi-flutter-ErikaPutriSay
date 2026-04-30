@@ -66,4 +66,5 @@ class DefaultFirebaseOptions {
     projectId: 'pab2-si',
     storageBucket: 'pab2-si.firebasestorage.app',
   );
+
 }
