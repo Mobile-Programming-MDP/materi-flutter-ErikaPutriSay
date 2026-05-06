@@ -41,6 +41,8 @@ class Post {
     );
   }
 
+  get title => null;
+
   Map<String, dynamic> toDocument() {
     return {
       'image': image,
