@@ -1,5 +1,7 @@
 import 'package:cepu_app/screens/add_post_screen.dart';
 import 'package:cepu_app/screens/sign_in_screen.dart';
+import 'package:cepu_app/services/post_service.dart';
+import 'package:cepu_app/widgets/post_list_item.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -21,20 +23,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Fungsi untuk membuat url foto profile / avatar
-  String generateAvatarUrl(String displayName) {
-    final formattedName = displayName.trim().replaceAll(' ', '+');
+  //Fungsi untuk membuat url foto profile / avatar
+  String generateAvatarUrl(String? fullName) {
+    final formattedName = fullName!.trim().replaceAll(' ', '+');
     return 'https://ui-avatars.com/api/?name=$formattedName&color=FFFFFF&background=000000';
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final displayName = user?.displayName?.trim();
-    final avatarName = (displayName != null && displayName.isNotEmpty)
-        ? displayName
-        : 'User';
-
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home Screen"),
@@ -43,21 +40,61 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               signOut();
             },
-            icon: const Icon(Icons.logout),
+            icon: Icon(Icons.logout),
             tooltip: "Sign Out",
           ),
         ],
       ),
       body: Column(
         children: [
-          Image.network(generateAvatarUrl(avatarName), width: 100, height: 100),
+          const SizedBox(height: 8.0),
+          Image.network(
+            generateAvatarUrl(
+              FirebaseAuth.instance.currentUser?.displayName.toString(),
+            ),
+            width: 80,
+            height: 80,
+          ),
           const SizedBox(height: 8.0),
           Text(
-            avatarName,
+            FirebaseAuth.instance.currentUser!.displayName!,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16.0),
-          const Center(child: Text("You Have Been Signed In!")),
+          const SizedBox(height: 8.0),
+          const Divider(),
+          Expanded(
+            child: StreamBuilder(
+              stream: PostService.getPostList(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                final posts = snapshot.data ?? [];
+                if (posts.isEmpty) {
+                  return const Center(child: Text('No posts yet.'));
+                }
+                return RefreshIndicator(
+                  onRefresh: () async {
+                  },
+                  child: ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      final post = posts[index];
+                      final isOwner =
+                          currentUserId != null &&
+                          post.userId == currentUserId;
+      //Buat widget PostListItem, di dalam folder widgets 
+      //dengan nama file post_list_item.dart
+                      return PostListItem(post: post, isOwner: isOwner);
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
