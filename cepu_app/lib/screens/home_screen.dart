@@ -29,6 +29,66 @@ class _HomeScreenState extends State<HomeScreen> {
     return 'https://ui-avatars.com/api/?name=$formattedName&color=FFFFFF&background=000000';
   }
 
+  //1 Create variable untuk menyimpan ketegori
+  String? selectedCategory;
+  List<String> get categories {
+    return [
+      'Jalan Rusak',
+      'Lampu Jalan Mati',
+      'Lawan Arah',
+      'Merokok di Jalan',
+      'Tidak Pakai Helm',
+    ];
+  }
+
+  //2 Create function untuk meampilkan model button sheet untuk memilih kategori
+  void _showCategoryFilter()async{
+    // ignore: unused_local_variable
+    final result = await showModalBottomSheet(
+    context: context, 
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    ),
+    builder: (context0){
+      return SafeArea(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: ListView(
+            padding: const EdgeInsets.only(bottom: 24),
+            children: [
+              ListTile(
+                leading: const Icon(Icons.clear),
+                title: Text("All category"),
+                onTap: () => Navigator.pop(
+                  context,
+                  null,
+                ),
+              ),
+              const Divider(),
+              ...categories.map(
+                 (category) => ListTile(
+                  title: Text(category),
+                  trailing: selectedCategory == category
+                        ? Icon(
+                          Icons.check,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                        : null,
+                  onTap: () => Navigator.pop(
+                    context,
+                    category,
+                  ),
+                 ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
@@ -36,12 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Home Screen"),
         actions: [
+          //3 tambahkan IconBottom untuk memunculkan filter kategori
           IconButton(
-            onPressed: () {
-              signOut();
-            },
-            icon: Icon(Icons.logout),
-            tooltip: "Sign Out",
+            onPressed: _showCategoryFilter,
+            icon: const Icon(Icons.filter_list),
+            tooltip: "Filter"
           ),
         ],
       ),
@@ -64,7 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
           const Divider(),
           Expanded(
             child: StreamBuilder(
-              stream: PostService.getPostList(),
+              //4. Ganti stream dgn memanggil fungsi 
+              //getPostListByCategory dengan parameter selectedCategory
+              stream: PostService.getPostListByCategory(selectedCategory),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -77,17 +138,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const Center(child: Text('No posts yet.'));
                 }
                 return RefreshIndicator(
-                  onRefresh: () async {
-                  },
+                  onRefresh: () async {},
                   child: ListView.builder(
                     itemCount: posts.length,
                     itemBuilder: (context, index) {
                       final post = posts[index];
                       final isOwner =
-                          currentUserId != null &&
-                          post.userId == currentUserId;
-      //Buat widget PostListItem, di dalam folder widgets 
-      //dengan nama file post_list_item.dart
+                          currentUserId != null && post.userId == currentUserId;
+                      //Buat widget PostListItem, di dalam folder widgets
+                      //dengan nama file post_list_item.dart
                       return PostListItem(post: post, isOwner: isOwner);
                     },
                   ),
