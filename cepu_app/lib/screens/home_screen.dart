@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Navigator.pop(
                   context,
                   null,
-                ),
+                ), // Null untuk memilih semua kategori
               ),
               const Divider(),
               ...categories.map(
