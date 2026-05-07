@@ -297,9 +297,20 @@ class _AddPostScreenState extends State<AddPostScreen> {
           children: [
             _buildImagePreview(),
             const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: _isSubmitting ? null : pickImageAndConvert,
-              child: const Text('Pick Image'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children:[
+                OutlinedButton(
+                  onPressed: _isGenerating ? null : pickImageAndConvert,
+                  child: Text(_isGenerating ? 'Generating...' : 'Select Image'),
+                ),
+                const SizedBox(width: 16),
+                if(!_isGenerating && _base64Image != null)
+                  OutlinedButton(
+                    onPressed: _isGenerating ? null : _generateDescriptionWithAI,
+                    child: Text('Generate Description'),
+                  )
+              ]
             ),
             const SizedBox(height: 16),
             OutlinedButton(
