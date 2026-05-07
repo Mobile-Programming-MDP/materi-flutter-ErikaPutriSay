@@ -5,6 +5,7 @@ import 'package:cepu_app/services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class AddPostScreen extends StatefulWidget {
@@ -22,6 +23,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
   String? _category;
   bool _isSubmitting = false;
   bool _isGettingLocation = false;
+  bool _isGenerating = false;
+
   List<String> get categories {
     return [
       'Jalan Rusak',
@@ -189,7 +192,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       if (_latitude == null || _longitude == null) {
         await _getLocation();
       }
-      PostService.addPost(
+      await PostService.addPost(
         Post(
           image: _base64Image,
           description: _descriptionController.text,
@@ -223,6 +226,64 @@ class _AddPostScreenState extends State<AddPostScreen> {
   void dispose() {
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  //7. Fungsi generate description otomatis berdasarkan gambar
+  //panggil fungsi ini setelah gsambar dipilih
+  Future<void> _generateDescriptionWithAI() async {
+    if (_base64Image == null) return;
+    setState(() => _isGenerating = true);
+    try {
+      const apikey = 'AIzaSyDMtnAQdeQM49GFK3LV1VmB_qeeD15_YRY';
+      const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=$apikey';
+      final body = jsonEncode({
+        "contents": [
+          {
+            "parts": [
+              {
+                "inlineData": {"mimeType": "image/jpeg", "data": _base64Image},
+              },
+              {
+                "text":
+                    "Berdasarkan foto ini, identifikasi satu kategori utama kerusakan fasilitas umum "
+                    "dari daftar berikut: jalan rusak, lampu jalan mati, lawan arah, merokok di jalan, tidak pakai helm dan lainnya. "
+                    "Pilih kategori yang paling dominan atau paling mendesak untuk dilaporkan. "
+                    "Buat deskripsi singkat untuk laporan perbaikan, dan tambahkan permohonan perbaikan. "
+                    "Fokus pada kerusakan yang terlihat dan hindari spekulasi.\n\n"
+                    "Format output yang diinginkan :\n"
+                    "Kategori: [satu kategori yang dipilih]\n"
+                    "Deskripsi: [deskripsi singkat]",
+              },
+            ],
+          },
+        ],
+      });
+      final headers = {'Content-Type': 'application/json'};
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+        String? outputText;
+        if (decoded['candidates'] is List && (decoded['candidates'] as List).isNotEmpty) {
+          final firstCandidate = (decoded['candidates'] as List)[0] as Map<String, dynamic>;
+          outputText = firstCandidate['output'] as String? ?? firstCandidate['content'] as String?;
+        }
+
+        if (outputText != null && outputText.isNotEmpty) {
+          _descriptionController.text = outputText;
+        }
+      } else {
+        debugPrint('Request failed: ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Failed to generate AI description: $e');
+    } finally {
+      if (mounted) setState(() => _isGenerating = false);
+    }
   }
 
   @override
