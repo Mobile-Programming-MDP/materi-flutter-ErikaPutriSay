@@ -168,6 +168,14 @@ class _MyAppState extends State<MyApp> {
     setState(() => status = "Subscribed to topic: $topic");
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint('Received foreground message: $(messange.messageId)');
+
+      if(kIsWeb){
+        // For web, just log the message - browser handles notification
+        debugPrint('web notification: ${message.notification?.title}');
+      }else{
+        //for android/Ios, show local notification
+      }
       if (message.data.isNotEmpty) {
         showNotificationFromData(message.data);
       } else {

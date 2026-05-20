@@ -165,15 +165,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
     final url = Uri.parse('https://fasum-cloud-erika.vercel.app/send-to-topic');
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         "topic": "berita-fasum",
         "title": "🔔 Laporan Baru",
         "body": body,
         "senderName": senderName,
-        "senderPhotoUrl": "https://static.vecteezy.com/system/resources/thumbnails/041/642/167/small_2x/ai-generated-portrait-of-handsome-smiling-young-man-with-folded-arms-isolated-free-png.png",
+        "senderPhotoUrl":
+            "https://static.vecteezy.com/system/resources/thumbnails/041/642/167/small_2x/ai-generated-portrait-of-handsome-smiling-young-man-with-folded-arms-isolated-free-png.png",
       }),
     );
 
@@ -235,7 +234,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
         ),
       );
       if (!mounted) return;
-      await sendNotificationToTopic(_descriptionController.text, fullName);
+      await sendNotificationToTopic(_descriptionController.text, fullName ?? 'Warga');
 
       ScaffoldMessenger.of(
         context,
@@ -268,7 +267,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
     setState(() => _isGenerating = true);
     try {
       const apikey = 'AIzaSyDMtnAQdeQM49GFK3LV1VmB_qeeD15_YRY';
-      const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=$apikey';
+      const url =
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=$apikey';
       final body = jsonEncode({
         "contents": [
           {
@@ -301,9 +301,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body) as Map<String, dynamic>;
         String? outputText;
-        if (decoded['candidates'] is List && (decoded['candidates'] as List).isNotEmpty) {
-          final firstCandidate = (decoded['candidates'] as List)[0] as Map<String, dynamic>;
-          outputText = firstCandidate['output'] as String? ?? firstCandidate['content'] as String?;
+        if (decoded['candidates'] is List &&
+            (decoded['candidates'] as List).isNotEmpty) {
+          final firstCandidate =
+              (decoded['candidates'] as List)[0] as Map<String, dynamic>;
+          outputText =
+              firstCandidate['output'] as String? ??
+              firstCandidate['content'] as String?;
         }
 
         if (outputText != null && outputText.isNotEmpty) {
@@ -332,18 +336,20 @@ class _AddPostScreenState extends State<AddPostScreen> {
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children:[
+              children: [
                 OutlinedButton(
                   onPressed: _isGenerating ? null : pickImageAndConvert,
                   child: Text(_isGenerating ? 'Generating...' : 'Select Image'),
                 ),
                 const SizedBox(width: 16),
-                if(!_isGenerating && _base64Image != null)
+                if (!_isGenerating && _base64Image != null)
                   OutlinedButton(
-                    onPressed: _isGenerating ? null : _generateDescriptionWithAI,
+                    onPressed: _isGenerating
+                        ? null
+                        : _generateDescriptionWithAI,
                     child: Text('Generate Description'),
-                  )
-              ]
+                  ),
+              ],
             ),
             const SizedBox(height: 16),
             OutlinedButton(
