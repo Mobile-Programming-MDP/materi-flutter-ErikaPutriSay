@@ -24,7 +24,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool _isSubmitting = false;
   bool _isGettingLocation = false;
   bool _isGenerating = false;
-
   List<String> get categories {
     return [
       'Jalan Rusak',
@@ -32,6 +31,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       'Lawan Arah',
       'Merokok di Jalan',
       'Tidak Pakai Helm',
+      'Lainnya',
     ];
   }
 
@@ -43,6 +43,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       final bytes = await image.readAsBytes();
       setState(() {
         _base64Image = base64Encode(bytes);
+        _generateDescriptionWithAI(); // Panggil fungsi AI setelah gambar dipilih
       });
     }
   }
@@ -254,12 +255,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
   //7. Fungsi generate description otomatis berdasarkan gambar
   //panggil fungsi ini setelah gsambar dipilih
   Future<void> _generateDescriptionWithAI() async {
@@ -297,21 +292,28 @@ class _AddPostScreenState extends State<AddPostScreen> {
         headers: headers,
         body: body,
       );
-
       if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
-        String? outputText;
-        if (decoded['candidates'] is List &&
-            (decoded['candidates'] as List).isNotEmpty) {
-          final firstCandidate =
-              (decoded['candidates'] as List)[0] as Map<String, dynamic>;
-          outputText =
-              firstCandidate['output'] as String? ??
-              firstCandidate['content'] as String?;
-        }
-
-        if (outputText != null && outputText.isNotEmpty) {
-          _descriptionController.text = outputText;
+        final jsonResponse = jsonDecode(response.body);
+        final text =
+            jsonResponse['candidates'][0]['content']['parts'][0]['text'];
+        print("AI TEXT: $text");
+        if (text != null && text.isNotEmpty) {
+          final lines = text.trim().split('\n');
+          String? aicategory;
+          String? aidescription;
+          for (var line in lines) {
+            final lower = line.toLowerCase();
+            if (lower.startsWith('kategori:')) {
+              aicategory = line.substring(9).trim();
+            } else if (lower.startsWith('deskripsi:')) {
+              aidescription = line.substring(11).trim();
+            }
+          }
+          aidescription ??= text.trim();
+          setState(() {
+            _category = aicategory ?? 'Tidak diketahui';
+            _descriptionController.text = aidescription!;
+          });
         }
       } else {
         debugPrint('Request failed: ${response.body}');
@@ -321,6 +323,42 @@ class _AddPostScreenState extends State<AddPostScreen> {
     } finally {
       if (mounted) setState(() => _isGenerating = false);
     }
+  }
+
+  Future<void> _sendNotificationToTopic(String body, String senderName) async {
+    final url = Uri.parse('https://cepu-cloud-if.vercel.app/send-to-topic');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "topic": "berita",
+        "title": "🔔 Laporan Baru",
+        "body": body,
+        "senderName": senderName,
+        "senderPhotoUrl":
+            "https://static.vecteezy.com/system/resources/thumbnails/041/642/167/small_2x/ai-generated-portrait-of-handsome-smiling-young-man-with-folded-arms-isolated-free-png.png",
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Notofikasi berhasil dikirim")));
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Notifikasi gagal dikirim")));
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   @override
