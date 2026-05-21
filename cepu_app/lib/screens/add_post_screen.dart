@@ -325,6 +325,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     }
   }
 
+  // ignore: unused_element
   Future<void> _sendNotificationToTopic(String body, String senderName) async {
     final url = Uri.parse('https://cepu-cloud-if.vercel.app/send-to-topic');
     final response = await http.post(
